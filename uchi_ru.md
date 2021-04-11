@@ -58,7 +58,7 @@ p array_of_keys([{a: 1, b: 2, c: 45}, {d: 123, c: 12}, {e: 87}])
 => [:a, :b, :c, :d, :c, :e]
 ```
 
-# b) напишите выражение, которое получает массив всех значений
+b) напишите выражение, которое получает массив всех значений
 
 ```ruby
 def array_of_values(arr)
@@ -175,10 +175,29 @@ end
 5) Напишите функцию, которая имитирует работу светафора
 a) на вход она получает один из цветов в виде строки (‘red’, ‘green’, ‘yellow’ ), на выходе
 будет результат (идти, стоять или ждать)
+
+```ruby
+traffic_light = {"red": "стоять", "green": "идти", "yellow": "ждать"}
+
+puts "Введите цвет сфетофора(red/green/yellow): "
+
+input_string = gets.chomp.to_sym
+  
+  if traffic_light.keys.include?(input_string)
+    puts "#{traffic_light[input_string]}" 
+  else
+    puts "Неверное значение, повторите еще раз."
+  end
+```
+
+```console
+Введите цвет сфетофора(red/green/yellow): 
+-> green
+=> идти
+```
+
 b) напишите это в виде консольной программы, которая не прекращает работу после
 однократного вызова, а ждет следующих запросов
-
-traffic light = {"red": "стоять", "green": "идти", "yellow": "ждать"}
 
 ```ruby
 traffic_light = {"red": "стоять", "green": "идти", "yellow": "ждать"}
@@ -187,8 +206,6 @@ loop do
   puts "Введите цвет сфетофора(red/green/yellow): "
 
   input_string = gets.chomp.to_sym
-
-  # p traffic_light.any?{|input_string| traffic_light.key?(input_string)} 
   
   if traffic_light.keys.include?(input_string)
     puts "#{traffic_light[input_string]}" 
@@ -252,13 +269,122 @@ end
 
 5) Обязательное задание
 Есть таблица students с колонками
+
 id int
 name varchar
 created_at datetime
 parent_id int
+
+```sql
+-- Создание таблицы Parents
+CREATE TABLE parents (
+  id NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  created_at DATETIME
+);
+
+-- Создание таблицы Students
+CREATE TABLE students (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  created_at DATETIME,
+  parent_id INTEGER,
+
+  FOREIGN KEY (parent_id)  REFERENCES parent_id(id)
+);
+```
+
+```sql
+-- Ввод данных
+INSERT INTO parents VALUES (1, 'Василий', '2020-08-10');
+INSERT INTO parents VALUES (2, 'Марина', '2020-09-01');
+INSERT INTO parents VALUES (3, 'Василий', '2020-09-20');
+
+INSERT INTO students VALUES (1, 'Иван', '2020-07-31', 'null');
+INSERT INTO students VALUES (2, 'Жанна', '2020-08-10', 1);
+INSERT INTO students VALUES (3, 'Николай', '2020-09-01', 2);
+INSERT INTO students VALUES (4, 'Иван', '2020-09-01', 2);
+INSERT INTO students VALUES (5, 'Сергей', '2020-09-15', 3);
+INSERT INTO students VALUES (6, 'Юрий', '2020-09-15', 2);
+INSERT INTO students VALUES (7, 'Анастасия', '2020-10-15', 'null');
+```
+
 a) посчитайте количество всех студентов
+
+```sql
+SELECT COUNT(*) 
+FROM students;
+```
+
+```console
+7
+```
+
 b) посчитайте количество студентов с именем Иван
+
+```sql
+SELECT COUNT(*) 
+FROM students 
+WHERE name = 'Иван';
+```
+
+```console
+2
+```
+
 c) посчитайте количество студентов созданных после 1 сентября 2020 года
+
+```sql
+SELECT COUNT(*) 
+FROM students 
+WHERE created_at > '2020-08-31';
+```
+
+```console
+5
+```
+
+6) Необязательное задание, но его выполнение будет плюсом.
+Так же есть таблица parents (см задание 5)
+id int
+name varchar
+created_at datetime
+
+a) посчитайте количество студентов с родителями
+
+```sql
+SELECT COUNT(*) 
+FROM students
+  WHERE parent_id != "null";
+```
+
+```console
+5
+```
+
+b) посчитайте количество студентов с родителями при том что имя родителя Марина
+```sql
+SELECT COUNT(*)
+FROM students
+INNER JOIN parents ON parents.id = students.parent_id 
+    AND parents.name = "Марина";
+```
+
+```console
+3
+```
+
+c) посчитайте количество студентов без родителя
+
+```sql
+SELECT COUNT(*) 
+FROM students
+WHERE parent_id = "null";
+```
+
+```console
+3
+```
 
 7) Необязательная, но выполнение будет очень большим плюсом
 a)Напишите простой блог на рельсе с минимальным функционалом (один автор,
